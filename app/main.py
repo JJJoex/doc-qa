@@ -1,13 +1,14 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 
 from app.config import settings
-from app.schemas import HealthResponse
+from app.qa import answer_question
+from app.schemas import AskRequest, AskResponse, HealthResponse
 
 
 app = FastAPI(
     title="Document Q&A",
-    version="0.1.0",
-    description="First milestone: health endpoint and local configuration loading.",
+    version="0.2.0",
+    description="Milestone 2: structured ask endpoint without retrieval.",
 )
 
 
@@ -17,6 +18,7 @@ def root() -> dict[str, str]:
         "message": "Document Q&A API is running.",
         "docs": "/docs",
         "health": "/health",
+        "ask": "/ask",
     }
 
 
@@ -28,3 +30,12 @@ def health() -> HealthResponse:
         environment=settings.app_env,
         openai_configured=bool(settings.openai_api_key),
     )
+
+
+@app.post("/ask", response_model=AskResponse)
+def ask(payload: AskRequest) -> AskResponse:
+    question = payload.question.strip()
+    if not question:
+        raise HTTPException(status_code=400, detail="Question must not be empty.")
+
+    return answer_question(payload)

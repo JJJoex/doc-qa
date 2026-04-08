@@ -2,8 +2,6 @@
 
 A small document Q&A project built in **Windows 11 + WSL2 Ubuntu**, with development done inside the Linux filesystem.
 
-## Current milestone
-
 Milestone 1: bootstrapping the backend.
 
 Current features:
@@ -11,6 +9,32 @@ Current features:
 - local `.env` configuration loading
 - `/` root endpoint
 - `/health` endpoint
+
+## Current milestone
+
+Milestone 2: structured question-answer endpoint.
+
+Current features:
+- FastAPI app scaffold
+- local `.env` configuration loading
+- `/` root endpoint
+- `/health` endpoint
+- `/ask` POST endpoint
+- structured request/response schemas
+
+## Ask endpoint
+
+### Request
+
+POST `/ask`
+
+Example body:
+
+```json
+{
+  "question": "What is this app for?",
+  "system_prompt": "Answer concisely."
+}
 
 ## Project structure
 
