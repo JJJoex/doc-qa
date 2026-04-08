@@ -7,8 +7,8 @@ from app.schemas import AskRequest, AskResponse, HealthResponse
 
 app = FastAPI(
     title="Document Q&A",
-    version="0.2.0",
-    description="Milestone 2: structured ask endpoint without retrieval.",
+    version="0.3.0",
+    description="Milestone 3: live OpenAI-backed ask endpoint without retrieval.",
 )
 
 
@@ -35,7 +35,13 @@ def health() -> HealthResponse:
 @app.post("/ask", response_model=AskResponse)
 def ask(payload: AskRequest) -> AskResponse:
     question = payload.question.strip()
+    print()
     if not question:
         raise HTTPException(status_code=400, detail="Question must not be empty.")
 
-    return answer_question(payload)
+    try:
+        return answer_question(payload)
+    except RuntimeError as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"Model call failed: {exc}") from exc
